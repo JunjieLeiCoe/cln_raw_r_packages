@@ -107,11 +107,15 @@ check_package_version(check_github = TRUE)
 
 ## GitHub Auto-Check & Update
 
-This package automatically checks GitHub availability and updates itself:
+This package automatically checks GitHub availability and updates itself every time you load it:
 
-- ✅ **Auto-verifies** the GitHub repo is public and accessible on every load
+- ✅ **Auto-verifies** the GitHub repo is public and accessible
 - 🔄 **Auto-updates** when newer versions are available
-- ❌ **Self-uninstalls** if the GitHub repository becomes unavailable
+- ❌ **Auto-uninstalls** if repository returns 404 (not found)
+- 🔒 **Auto-uninstalls** if repository becomes PRIVATE
+- ⚠️ **Auto-uninstalls** if repository is inaccessible
+
+**Protection:** Ensures the package only works when https://github.com/JunjieLeiCoe/cln_raw_r_packages is publicly available.
 
 See **GITHUB_CHECK.md** for details.
 

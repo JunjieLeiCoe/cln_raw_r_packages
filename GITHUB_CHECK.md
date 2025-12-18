@@ -21,18 +21,45 @@ The package checks if https://github.com/JunjieLeiCoe/cln_raw_r_packages is:
 
 ### 2. **If Repository is NOT Available**
 
-If the GitHub repository is private, deleted, or inaccessible:
+The package now detects THREE specific failure conditions:
 
+#### A. Repository Not Found (404)
+```
+[ ERROR ] GitHub repository not found (404).
+[ WARNING ] Uninstalling package from your system...
+```
+
+#### B. Repository is Private
+```
+[ ERROR ] GitHub repository is PRIVATE.
+[ WARNING ] Uninstalling package from your system...
+```
+
+#### C. Other Access Issues
 ```
 [ ERROR ] GitHub repository not accessible.
-[ WARNING ] Package will be uninstalled.
+[ WARNING ] Uninstalling package from your system...
 ```
 
-The package will create an uninstall script and provide instructions to remove itself.
+**Automatic Uninstallation:**
 
-**To complete uninstallation:**
+The package will automatically:
+1. Create an uninstall script in temp directory
+2. Schedule removal when you exit R session
+3. Provide manual option if you want to uninstall immediately
+
+```
+[ INFO ] Uninstall script created at: /tmp/uninstall_jleiutils.R
+[ INFO ] Package will be removed after you close this session.
+[ INFO ] Or run now: source('/tmp/uninstall_jleiutils.R')
+```
+
+**To uninstall immediately:**
 ```r
-# The package will provide a script path, or manually run:
+# Use the provided path
+source('/tmp/uninstall_jleiutils.R')
+
+# Or manually
 remove.packages("jleiutils")
 ```
 
@@ -80,8 +107,10 @@ install.packages(c("curl", "devtools"))
 |-----------|--------|
 | GitHub repo is public & accessible | ✅ Load package normally |
 | Newer version available on GitHub | 🔄 Auto-update and prompt restart |
-| GitHub repo is private/deleted | ❌ Warn user and initiate uninstall |
-| Network timeout or error | ⚠️ Assume not available, initiate uninstall |
+| GitHub repo returns 404 (not found) | ❌ Show "404" error, auto-uninstall |
+| GitHub repo is PRIVATE | ❌ Show "PRIVATE" error, auto-uninstall |
+| GitHub repo inaccessible (other) | ❌ Show "not accessible" error, auto-uninstall |
+| Network timeout or error | ⚠️ Assume not available, auto-uninstall |
 
 ## Testing
 

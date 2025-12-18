@@ -18,25 +18,22 @@
         api_url <- paste0("https://api.github.com/repos/", github_repo)
         
         # Check if GitHub repo is accessible
-        repo_available <- check_github_availability(api_url, github_url)
+        check_result <- check_github_availability(api_url, github_url)
         
-        if (!repo_available) {
-            # Repository not available - warn and attempt uninstall
-            packageStartupMessage("\033[31m[ ERROR ]\033[0m GitHub repository not accessible.")
-            packageStartupMessage("\033[33m[ WARNING ]\033[0m Package will be uninstalled.")
+        if (!check_result$available) {
+            # Repository not available - show reason and uninstall
+            if (check_result$status == 404) {
+                packageStartupMessage("\033[31m[ ERROR ]\033[0m GitHub repository not found (404).")
+            } else if (check_result$is_private) {
+                packageStartupMessage("\033[31m[ ERROR ]\033[0m GitHub repository is PRIVATE.")
+            } else {
+                packageStartupMessage("\033[31m[ ERROR ]\033[0m GitHub repository not accessible.")
+            }
             
-            # Attempt to uninstall after warning
-            tryCatch({
-                # Create a script to run after session
-                uninstall_script <- file.path(tempdir(), "uninstall_jleiutils.R")
-                writeLines('try(remove.packages("jleiutils"), silent = TRUE)', 
-                          uninstall_script)
-                
-                packageStartupMessage("\033[33m[ INFO ]\033[0m Please run: source('", uninstall_script, 
-                                    "') to complete uninstallation")
-            }, error = function(e) {
-                packageStartupMessage("\033[33m[ INFO ]\033[0m Please manually run: remove.packages('jleiutils')")
-            })
+            packageStartupMessage("\033[33m[ WARNING ]\033[0m Uninstalling package from your system...")
+            
+            # Automatically uninstall the package
+            uninstall_package()
             
             return(invisible(NULL))
         }
@@ -99,31 +96,56 @@ show_loaded_packages_on_startup <- function() {
 #'
 #' @description
 #' Checks if the GitHub repository is publicly accessible.
+#' Specifically detects 404 errors and private repositories.
 #'
 #' @param api_url GitHub API URL
 #' @param github_url GitHub web URL
 #'
-#' @return Logical indicating if repository is available
+#' @return List with availability status, HTTP status code, and private flag
 #'
 #' @keywords internal
 check_github_availability <- function(api_url, github_url) {
     
-    # Try API endpoint first
+    result <- list(
+        available = FALSE,
+        status = NA,
+        is_private = FALSE
+    )
+    
+    # Try API endpoint first (most reliable)
     tryCatch({
-        # Check if we can access the API
         if (requireNamespace("curl", quietly = TRUE)) {
             h <- curl::new_handle()
             curl::handle_setopt(h, timeout = 5, connecttimeout = 5)
             
             # Try API
             response <- curl::curl_fetch_memory(api_url, handle = h)
+            result$status <- response$status_code
             
-            # Check if successful (200-299 status codes)
+            # Check status codes
+            if (response$status_code == 404) {
+                # Repository not found
+                result$available <- FALSE
+                result$is_private <- FALSE
+                return(result)
+            }
+            
             if (response$status_code >= 200 && response$status_code < 300) {
-                # Parse JSON to verify it's public
+                # Parse JSON to check if private
                 content <- rawToChar(response$content)
+                
+                # Check if private
+                if (grepl('"private"\\s*:\\s*true', content, ignore.case = TRUE)) {
+                    result$available <- FALSE
+                    result$is_private <- TRUE
+                    return(result)
+                }
+                
+                # Check if public
                 if (grepl('"private"\\s*:\\s*false', content, ignore.case = TRUE)) {
-                    return(TRUE)
+                    result$available <- TRUE
+                    result$is_private <- FALSE
+                    return(result)
                 }
             }
         }
@@ -134,19 +156,91 @@ check_github_availability <- function(api_url, github_url) {
             curl::handle_setopt(h, timeout = 5, connecttimeout = 5)
             
             response <- curl::curl_fetch_memory(github_url, handle = h)
+            result$status <- response$status_code
             
-            # If we can access it and it's not a 404, assume it's available
-            if (response$status_code >= 200 && response$status_code < 400) {
-                return(TRUE)
+            # 404 = not found
+            if (response$status_code == 404) {
+                result$available <- FALSE
+                result$is_private <- FALSE
+                return(result)
             }
+            
+            # 200-299 = accessible
+            if (response$status_code >= 200 && response$status_code < 300) {
+                result$available <- TRUE
+                result$is_private <- FALSE
+                return(result)
+            }
+            
+            # Other errors (403, etc.) - assume private or inaccessible
+            result$available <- FALSE
+            return(result)
         }
         
-        return(FALSE)
+        return(result)
         
     }, error = function(e) {
         # If any error occurs, assume not available
-        return(FALSE)
+        return(result)
     })
+}
+
+
+#' Uninstall Package
+#'
+#' @description
+#' Automatically uninstalls the jleiutils package from the user's system.
+#'
+#' @return Invisible NULL
+#'
+#' @keywords internal
+uninstall_package <- function() {
+    
+    tryCatch({
+        # Create uninstall script that runs after package detaches
+        uninstall_script <- file.path(tempdir(), "uninstall_jleiutils.R")
+        
+        script_content <- '
+# Auto-generated uninstall script for jleiutils
+tryCatch({
+    if ("jleiutils" %in% rownames(installed.packages())) {
+        remove.packages("jleiutils")
+        cat("\\n\\033[32m[ INFO ]\\033[0m jleiutils package has been uninstalled.\\n")
+        cat("\\033[33m[ INFO ]\\033[0m Reason: GitHub repository is not publicly accessible.\\n\\n")
+    }
+}, error = function(e) {
+    cat("\\n\\033[31m[ ERROR ]\\033[0m Failed to uninstall jleiutils:", e$message, "\\n")
+    cat("\\033[33m[ INFO ]\\033[0m Please manually run: remove.packages(\\"jleiutils\\")\\n\\n")
+})
+'
+        
+        writeLines(script_content, uninstall_script)
+        
+        packageStartupMessage("\033[33m[ INFO ]\033[0m Uninstall script created at: ", uninstall_script)
+        packageStartupMessage("\033[33m[ INFO ]\033[0m Package will be removed after you close this session.")
+        packageStartupMessage("\033[33m[ INFO ]\033[0m Or run now: source('", uninstall_script, "')")
+        
+        # Try to schedule execution for when R exits
+        if (interactive()) {
+            # In interactive mode, add to .Last
+            on_exit_code <- substitute({
+                if (file.exists(script_path)) {
+                    source(script_path)
+                    unlink(script_path)
+                }
+            }, list(script_path = uninstall_script))
+            
+            .Last <<- function() {
+                eval(on_exit_code)
+            }
+        }
+        
+    }, error = function(e) {
+        packageStartupMessage("\033[31m[ ERROR ]\033[0m Failed to create uninstall script")
+        packageStartupMessage("\033[33m[ INFO ]\033[0m Please manually run: remove.packages('jleiutils')")
+    })
+    
+    invisible(NULL)
 }
 
 
