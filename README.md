@@ -84,16 +84,19 @@ filename <- generate_filename(
 # Returns: "sales_report_ACME_1500rows_2025-12-18_JLei.xlsx"
 ```
 
-## Authorization
+## GitHub Auto-Check & Update
 
-This package includes authorization protection for personal use only. After installation, verify your access:
+This package automatically checks GitHub availability and updates itself:
 
-```r
-library(jleiutils)
-show_user_info()  # Check if you're authorized
-```
+- ✅ **Auto-verifies** the GitHub repo is public and accessible on every load
+- 🔄 **Auto-updates** when newer versions are available
+- ❌ **Self-uninstalls** if the GitHub repository becomes unavailable
 
-If not authorized, see **AUTHORIZATION_SETUP.md** for setup instructions.
+See **GITHUB_CHECK.md** for details.
+
+## Authorization (Currently Disabled)
+
+Authorization functions are included but disabled. See **AUTHORIZATION_SETUP.md** if you want to enable them.
 
 ## Quick Start
 
@@ -158,6 +161,8 @@ cln_raw_r_packages/
 
 - R >= 3.5.0
 - rstudioapi package (for RStudio integration)
+- curl package (for GitHub checks)
+- devtools package (for auto-updates, optional)
 
 ## License
 

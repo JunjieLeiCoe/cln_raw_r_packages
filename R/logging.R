@@ -13,7 +13,7 @@
 #'
 #' @export
 log_info <- function(...) {
-    check_auth()
+    # check_auth()  # DISABLED
     message <- paste(..., collapse = " ")
     cat("\033[32m[ INFO ]\033[0m", message, "\n")
     invisible(NULL)
@@ -34,7 +34,7 @@ log_info <- function(...) {
 #'
 #' @export
 log_warning <- function(...) {
-    check_auth()
+    # check_auth()  # DISABLED
     message <- paste(..., collapse = " ")
     cat("\033[33m[ WARNING ]\033[0m", message, "\n")
     invisible(NULL)
@@ -55,7 +55,7 @@ log_warning <- function(...) {
 #'
 #' @export
 log_error <- function(...) {
-    check_auth()
+    # check_auth()  # DISABLED
     message <- paste(..., collapse = " ")
     cat("\033[31m[ ERROR ]\033[0m", message, "\n")
     invisible(NULL)
