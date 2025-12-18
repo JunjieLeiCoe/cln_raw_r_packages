@@ -156,6 +156,7 @@ See the `examples/` folder for detailed usage examples:
 - `06_check_authorization.R` - Check authorization status
 - `07_test_github_check.R` - Test GitHub availability check
 - `08_package_info.R` - View loaded packages and session info
+- `09_test_uninstall_scenario.R` - Understand auto-uninstall behavior
 
 ## Package Structure
 
