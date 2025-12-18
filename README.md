@@ -84,6 +84,27 @@ filename <- generate_filename(
 # Returns: "sales_report_ACME_1500rows_2025-12-18_JLei.xlsx"
 ```
 
+### 5. Package Information Functions
+
+View loaded packages and session information:
+
+```r
+# Show all loaded packages (displayed automatically on load)
+show_loaded_packages()
+
+# Show with version details
+show_loaded_packages(detailed = TRUE)
+
+# Full session information
+show_session_info()
+
+# Check package version
+check_package_version()
+
+# Check against GitHub for updates
+check_package_version(check_github = TRUE)
+```
+
 ## GitHub Auto-Check & Update
 
 This package automatically checks GitHub availability and updates itself:
@@ -129,6 +150,8 @@ See the `examples/` folder for detailed usage examples:
 - `04_filename_generation.R` - Filename generation
 - `05_complete_workflow.R` - Complete workflow example
 - `06_check_authorization.R` - Check authorization status
+- `07_test_github_check.R` - Test GitHub availability check
+- `08_package_info.R` - View loaded packages and session info
 
 ## Package Structure
 
@@ -156,6 +179,9 @@ cln_raw_r_packages/
 | `generate_filename()` | Create standardized filename with metadata |
 | `show_user_info()` | Display current user and authorization status |
 | `setup_auth()` | Show instructions for setting up authorization |
+| `show_loaded_packages()` | Display all currently loaded packages |
+| `show_session_info()` | Display comprehensive session information |
+| `check_package_version()` | Check current package version (optionally vs GitHub) |
 
 ## Requirements
 

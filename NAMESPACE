@@ -8,4 +8,7 @@ export(suppress_package_messages)
 export(generate_filename)
 export(show_user_info)
 export(setup_auth)
+export(show_loaded_packages)
+export(show_session_info)
+export(check_package_version)
 

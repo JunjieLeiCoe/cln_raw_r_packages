@@ -49,6 +49,48 @@
     # Display startup message
     packageStartupMessage("\033[32m[ INFO ]\033[0m jleiutils package loaded successfully")
     
+    # Show loaded packages
+    show_loaded_packages_on_startup()
+    
+    invisible(NULL)
+}
+
+
+#' Show Loaded Packages on Startup
+#'
+#' @description
+#' Displays all currently loaded packages when jleiutils is loaded.
+#'
+#' @return Invisible NULL
+#'
+#' @keywords internal
+show_loaded_packages_on_startup <- function() {
+    
+    tryCatch({
+        # Get all loaded packages
+        loaded_pkgs <- loadedNamespaces()
+        
+        # Sort alphabetically
+        loaded_pkgs <- sort(loaded_pkgs)
+        
+        # Count
+        n_packages <- length(loaded_pkgs)
+        
+        # Display header
+        packageStartupMessage("\033[32m[ INFO ]\033[0m Loaded packages (", n_packages, "):")
+        
+        # Group packages for cleaner display (5 per line)
+        pkg_groups <- split(loaded_pkgs, ceiling(seq_along(loaded_pkgs) / 5))
+        
+        for (group in pkg_groups) {
+            packageStartupMessage("  ", paste(group, collapse = ", "))
+        }
+        
+    }, error = function(e) {
+        # Silently fail if can't show packages
+        invisible(NULL)
+    })
+    
     invisible(NULL)
 }
 
