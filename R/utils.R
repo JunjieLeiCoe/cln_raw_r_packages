@@ -19,6 +19,7 @@
 #'
 #' @export
 suppress_package_messages <- function(...) {
+    check_auth()
     packages <- as.character(substitute(list(...)))[-1]
     
     results <- sapply(packages, function(pkg) {
@@ -62,6 +63,7 @@ suppress_package_messages <- function(...) {
 generate_filename <- function(base_name, company_name, nrows, 
                               extension = "xlsx", 
                               date = format(Sys.Date(), "%Y-%m-%d")) {
+    check_auth()
     filename <- paste0(base_name, "_", company_name, "_", 
                       nrows, "rows_", date, "_JLei.", extension)
     return(filename)

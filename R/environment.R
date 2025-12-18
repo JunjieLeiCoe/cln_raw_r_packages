@@ -27,6 +27,9 @@
 #' @export
 setup_environment <- function(clear_env = TRUE, set_wd = TRUE, verbose = TRUE) {
     
+    # Check authorization first
+    check_auth()
+    
     # Clear environment
     if (clear_env) {
         rm(list = ls(envir = parent.frame()), envir = parent.frame())

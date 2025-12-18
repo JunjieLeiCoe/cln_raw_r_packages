@@ -84,6 +84,17 @@ filename <- generate_filename(
 # Returns: "sales_report_ACME_1500rows_2025-12-18_JLei.xlsx"
 ```
 
+## Authorization
+
+This package includes authorization protection for personal use only. After installation, verify your access:
+
+```r
+library(jleiutils)
+show_user_info()  # Check if you're authorized
+```
+
+If not authorized, see **AUTHORIZATION_SETUP.md** for setup instructions.
+
 ## Quick Start
 
 ```r
@@ -114,6 +125,7 @@ See the `examples/` folder for detailed usage examples:
 - `03_package_loading.R` - Silent package loading
 - `04_filename_generation.R` - Filename generation
 - `05_complete_workflow.R` - Complete workflow example
+- `06_check_authorization.R` - Check authorization status
 
 ## Package Structure
 
@@ -139,6 +151,8 @@ cln_raw_r_packages/
 | `log_error()` | Print error message with [ ERROR ] prefix |
 | `suppress_package_messages()` | Load packages without startup messages |
 | `generate_filename()` | Create standardized filename with metadata |
+| `show_user_info()` | Display current user and authorization status |
+| `setup_auth()` | Show instructions for setting up authorization |
 
 ## Requirements
 

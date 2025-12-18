@@ -5,4 +5,7 @@ export(log_info)
 export(log_warning)
 export(log_error)
 export(suppress_package_messages)
+export(generate_filename)
+export(show_user_info)
+export(setup_auth)
 
