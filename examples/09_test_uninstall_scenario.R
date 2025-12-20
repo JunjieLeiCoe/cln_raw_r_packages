@@ -64,3 +64,4 @@ manual_uninstall <- function() {
 
 log_info("Test script complete")
 
+

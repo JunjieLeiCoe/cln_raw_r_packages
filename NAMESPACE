@@ -2,6 +2,8 @@
 
 export(setup_environment)
 export(log_info)
+export(log_ok)
+export(log_success)
 export(log_warning)
 export(log_error)
 export(suppress_package_messages)
