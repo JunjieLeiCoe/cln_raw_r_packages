@@ -6,7 +6,7 @@ A collection of utility functions for personal data science work in R. This pack
 
 ```r
 # Install from GitHub
-devtools::install_github("yourusername/cln_raw_r_packages")
+devtools::install_github("JunjieLeiCoe/cln_raw_r_packages")
 
 # Or install locally
 devtools::install()
