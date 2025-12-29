@@ -87,3 +87,4 @@ cat("  log_error()   - Bright red   - Error messages\n\n")
 
 log_info("Logging showcase complete!")
 
+
