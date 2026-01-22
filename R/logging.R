@@ -45,6 +45,44 @@
 .use_color <- .supports_color()
 
 
+#' Log Header Banner
+#'
+#' @description
+#' Prints a banner-style header to mark different stages of a script.
+#' Useful for visually separating sections in terminal output.
+#'
+#' @param ... Message components to be concatenated and printed.
+#' @param width Width of the banner (default 50 characters).
+#'
+#' @return Invisibly returns NULL.
+#'
+#' @examples
+#' log_header("Data Loading")
+#' log_header("Processing Stage 1")
+#' log_header("Final Output", width = 60)
+#'
+#' @export
+log_header <- function(..., width = 50) {
+    message <- paste(..., collapse = " ")
+    border <- paste(rep("=", width), collapse = "")
+    
+    if (.use_color) {
+        cat("\n")
+        cat(.colors$bright_magenta, border, .colors$reset, "\n", sep = "")
+        cat(.colors$bright_magenta, "+  ", .colors$reset, message, "\n", sep = "")
+        cat(.colors$bright_magenta, border, .colors$reset, "\n", sep = "")
+        cat("\n")
+    } else {
+        cat("\n")
+        cat(border, "\n", sep = "")
+        cat("+  ", message, "\n", sep = "")
+        cat(border, "\n", sep = "")
+        cat("\n")
+    }
+    invisible(NULL)
+}
+
+
 #' Log Info Message
 #'
 #' @description

@@ -3,7 +3,7 @@
 
 suppressPackageStartupMessages(library(jleiutils))
 
-cat("\n=== Enhanced Logging Functions Showcase ===\n\n")
+log_header("Enhanced Logging Functions Showcase")
 
 # 1. INFO - Bright Cyan (for informational messages)
 log_info("Payroll data combined. Total rows: 22780")
@@ -39,7 +39,7 @@ log_error("GitHub repository not accessible")
 cat("\n")
 
 # Realistic workflow example
-cat("=== Realistic Data Processing Workflow ===\n\n")
+log_header("Realistic Data Processing Workflow")
 
 log_info("Starting data processing pipeline...")
 
@@ -72,18 +72,15 @@ log_info("")
 log_success("Data processing pipeline completed successfully!")
 
 cat("\n=== Color Support Status ===\n")
-if (.use_color) {
-    log_ok("ANSI colors are supported in your terminal")
-} else {
-    log_warning("ANSI colors not supported - using plain text")
-}
+log_ok("ANSI colors are supported in your terminal")
 
-cat("\n=== Available Functions ===\n")
-cat("  log_info()    - Bright cyan  - Informational messages\n")
-cat("  log_ok()      - Bright green - Success messages\n")
-cat("  log_success() - Bright green - Alias for log_ok()\n")
-cat("  log_warning() - Bright yellow- Warning messages\n")
-cat("  log_error()   - Bright red   - Error messages\n\n")
+log_header("Available Functions")
+cat("  log_header()  - Bright magenta - Section banners\n")
+cat("  log_info()    - Bright cyan    - Informational messages\n")
+cat("  log_ok()      - Bright green   - Success messages\n")
+cat("  log_success() - Bright green   - Alias for log_ok()\n")
+cat("  log_warning() - Bright yellow  - Warning messages\n")
+cat("  log_error()   - Bright red     - Error messages\n\n")
 
 log_info("Logging showcase complete!")
 
